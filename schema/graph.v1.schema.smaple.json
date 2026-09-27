@@ -1,0 +1,61 @@
+{
+  "schema": "1.0",
+  "generated": "UNIX TIME FROM EPOACH",
+
+  "solution": {
+    "name": "Pramaan.sln",
+    "path": "./Pramaan.sln"
+  },
+  "projects": [
+    {
+      "guid": 1,
+      "name": "Pramaan.API",
+      "path": "Pramaan.API/Pramaan.API.csproj",
+      "targetFrameworks": ["10.0"],
+      "isTestProject": false
+    },
+    {
+      "guid": 3,
+      "name": "Pramaan.Chakra",
+      "path": "Pramaan.Chakra/Pramaan.Chakra.csproj",
+      "targetFrameworks": ["10.0"],
+      "isTestProject": false
+    }
+  ],
+
+  "packages": [
+    {
+      "id": 1,
+      "name": "AutoMapper",
+      "version": "1.8.20",
+      "transitiveDependencies": [3, 4]
+    },
+    {
+      "id": 2,
+      "name": "Hangfire",
+      "version": "1.8.20",
+      "transitiveDependencies": [3]
+    },
+    {
+      "id": 3,
+      "name": "HelloPackage",
+      "version": "1.8.20",
+      "transitiveDependencies": []
+    },
+    {
+      "id": 4,
+      "name": "Another package",
+      "version": "1.8.20",
+      "transitiveDependencies": []
+    }
+  ],
+
+  "dependencies": [
+    {
+      "project": 1,
+      "projectDependency": [3],
+      "packageDependency": [1, 2]
+    }
+
+  ]
+}
