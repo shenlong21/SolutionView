@@ -8,7 +8,7 @@
   },
   "projects": [
     {
-      "guid": 1,
+      "id": 1,
       "name": "Pramaan.API",
       "path": "Pramaan.API/Pramaan.API.csproj",
       "targetFrameworks": ["10.0"],
