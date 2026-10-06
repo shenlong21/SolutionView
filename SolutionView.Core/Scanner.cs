@@ -1,6 +1,7 @@
 ﻿using Buildalyzer;
 using Buildalyzer.IO;
 using Buildalyzer.Environment;
+using Buildalyzer.Construction;
 
 namespace SolutionView.Core;
 
@@ -23,7 +24,7 @@ public class Scanner
 
         AnalyzerManager manager = new AnalyzerManager(iOPath.Combine(solutionPath));
 
-        svi.Solution.Name =  Path.GetFileName(manager.SolutionFilePath);
+        svi.Solution.Name = Path.GetFileName(manager.SolutionFilePath);
         svi.Solution.Path = manager.SolutionFilePath;
         // svi.Projects.
 
@@ -32,7 +33,6 @@ public class Scanner
         var flattenedOrderedPackages = projectPackages.SelectMany(p => p).ToList();
         var uniqueOrderedPackages = flattenedOrderedPackages.DistinctBy(p => new { p.Name, p.Version }).ToList();
         var orderedPackages = uniqueOrderedPackages.OrderBy(p => p.Name).ThenBy(p => p.Version).ToList();
-
 
         for (var i = 1; i <= orderedPackages.Count; i++)
         {
@@ -58,17 +58,42 @@ public class Scanner
                 Name = Path.GetFileName(project.Key),
                 Path = project.Value.ProjectFile.Path,
                 TargetFrameworks = [.. project.Value.ProjectFile.TargetFrameworks],
-                IsTestProject = false
+                IsTestProject = Path.GetFileName(project.Key).Contains("Test"),
             };
 
             svi.Projects.Add(svp);
+        }
+
+        // dependencies now
+        for (var i = 1; i <= orderedProjects.Count; i++)
+        {
+            var project = orderedProjects.ElementAt(i - 1);
 
             var svdi = new SolutionViewDependencyItem
             {
-              ProjectId = i,
-              ProjectDependency = [],
-              PackageDependency = [],
+                ProjectId = i,
+                ProjectDependency = [],
+                PackageDependency = [],
             };
+
+                IProjectAnalyzer projectAnalyser = manager.GetProject(project.Key);
+                IAnalyzerResults analyserResult = projectAnalyser.Build();
+
+                if (analyserResult.OverallSuccess)
+                {
+                    foreach (var result in analyserResult)
+                    {
+                        result.ProjectReferences.ToList().ForEach(r =>
+                        {
+                            int pid = svi.Projects.FirstOrDefault(op => op.Path == r.ToString())?.Id ?? 0;
+                            if (pid != 0) svdi.ProjectDependency.Add(pid);
+                        });
+                    }
+                }
+                else {
+                    throw new Exception("Build failed: " + project.Key + " " + analyserResult.OverallSuccess);
+                }
+            
 
             foreach (var packageReference in project.Value.ProjectFile.PackageReferences)
             {

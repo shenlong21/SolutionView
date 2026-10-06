@@ -39,7 +39,7 @@ public class Render
 
         AnsiConsole.Write(packageTable);
 
-        var tree = new Tree("Dependencies");
+        var tree = new Tree("Project Dependencies");
         foreach (var dependency in svi.Dependencies)
         {
             var projectNode = tree.AddNode(dependency.ProjectId.ToString());
@@ -48,12 +48,21 @@ public class Render
                 projectNode.AddNode(projectDependency.ToString());
             }
 
+
+        }
+
+        AnsiConsole.Write(tree);
+
+        var tree1 = new Tree("Package Dependencies");
+        foreach (var dependency in svi.Dependencies)
+        {
+            var projectNode = tree1.AddNode(dependency.ProjectId.ToString());
             foreach (var packageDependency in dependency.PackageDependency)
             {
                 projectNode.AddNode(packageDependency.ToString());
             }
         }
-        AnsiConsole.Write(tree);
 
+        AnsiConsole.Write(tree1);
     }
 }

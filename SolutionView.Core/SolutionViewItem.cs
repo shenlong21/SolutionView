@@ -4,7 +4,7 @@ public class SolutionViewItem
 {
     public string SchemaVersion { get; set; } = "1.0";
     public string Generated { get; set; } = string.Empty;
-    public SolutionViewSolutionItem Solution { get; set; } = new SolutionViewSolutionItem();
+    public SolutionViewSolutionItem? Solution { get; set; }
     public List<SolutionViewProjectItem> Projects { get; set; } = new List<SolutionViewProjectItem>();
     public List<SolutionViewPackageItem> Packages { get; set; } = new List<SolutionViewPackageItem>();
     public List<SolutionViewDependencyItem> Dependencies { get; set; } = new List<SolutionViewDependencyItem>();
